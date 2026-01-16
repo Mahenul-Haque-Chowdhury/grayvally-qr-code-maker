@@ -19,7 +19,7 @@ const TYPE_COLORS: Record<string, string> = {
 
 export default function HistoryPanel({ history, onRestore, onToggleStar }: Props) {
   return (
-    <section className="card px-6 py-6">
+    <section className="card px-4 py-5 sm:px-6 sm:py-6">
       <div className="flex items-center justify-between">
         <div className="section-header">
           <div className="section-icon bg-gradient-to-br from-violet-500 to-purple-600 text-white">
@@ -68,7 +68,7 @@ export default function HistoryPanel({ history, onRestore, onToggleStar }: Props
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
               <button
                 type="button"
                 className={`btn-icon flex items-center justify-center h-8 w-8 rounded-lg transition-colors ${item.starred ? 'text-amber-500 bg-amber-50 border-amber-200' : 'text-slate-400 hover:text-amber-500'}`}

@@ -226,7 +226,7 @@ function HomePageContent() {
     <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 lg:pr-[392px] xl:pr-[456px] 2xl:pr-[500px] lg:pb-4">
       <div className="flex min-w-0 flex-1 flex-col gap-6">
         {/* Hero Section */}
-        <section className="card-glow px-6 py-8 sm:py-10">
+        <section className="card-glow px-4 py-6 sm:px-6 sm:py-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-col gap-4 max-w-xl">
               <div className="flex items-center gap-2">
@@ -310,8 +310,8 @@ function HomePageContent() {
         </div>
 
         {/* Privacy Footer */}
-        <section className="card px-6 py-6">
-          <div className="flex items-center gap-4">
+        <section className="card px-4 py-5 sm:px-6 sm:py-6">
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
               <IconLock className="h-6 w-6" />
             </div>

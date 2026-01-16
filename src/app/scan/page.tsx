@@ -10,7 +10,7 @@ const TIPS = [
 export default function ScanPage() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
-      <section className="card-glow px-6 py-8">
+      <section className="card-glow px-4 py-6 sm:px-6 sm:py-8">
         <div className="section-header">
           <div className="section-icon bg-gradient-to-br from-brand-500 to-brand-600 text-white">
             <IconScan className="h-6 w-6" />

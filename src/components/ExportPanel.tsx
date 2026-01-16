@@ -89,7 +89,7 @@ export default function ExportPanel({
   };
 
   return (
-    <section className="card px-5 py-5 lg:px-4 lg:py-3">
+    <section className="card px-4 py-5 sm:px-5 sm:py-5 lg:px-4 lg:py-3">
       <div className="flex items-center justify-between">
         <div className="section-header">
           <div className="section-icon bg-gradient-to-br from-emerald-500 to-teal-600 text-white lg:h-9 lg:w-9">
@@ -108,16 +108,16 @@ export default function ExportPanel({
 
       <div className="mt-5 space-y-4 lg:mt-2 lg:space-y-2">
         {/* Primary Download */}
-        <div className="flex flex-wrap items-center gap-3 lg:gap-2">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:gap-2">
           <button
             type="button"
-            className="btn btn-primary group lg:px-4 lg:py-2 lg:text-xs"
+            className="btn btn-primary group w-full sm:w-auto lg:px-4 lg:py-2 lg:text-xs"
             onClick={() => handleDownload('png')}
           >
             <IconFilePng className="h-5 w-5 lg:h-4 lg:w-4 transition-transform group-hover:scale-110" />
             Download PNG
           </button>
-          <div className="flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 lg:px-2 lg:py-1.5">
+          <div className="flex w-full items-center justify-between gap-2 rounded-xl bg-slate-100 px-3 py-2 sm:w-auto lg:px-2 lg:py-1.5">
             <label className="text-xs font-semibold text-slate-600 lg:text-[11px]">Scale</label>
             <select
               className="bg-transparent text-xs font-bold text-slate-900 outline-none cursor-pointer lg:text-[11px]"

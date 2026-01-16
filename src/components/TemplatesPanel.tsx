@@ -16,7 +16,7 @@ export default function TemplatesPanel({ templates, onApply }: Props) {
   };
 
   return (
-    <section className="card px-6 py-6">
+    <section className="card px-4 py-5 sm:px-6 sm:py-6">
       <div className="flex items-center justify-between">
         <div className="section-header">
           <div className="section-icon bg-gradient-to-br from-amber-500 to-orange-600 text-white">
@@ -36,7 +36,7 @@ export default function TemplatesPanel({ templates, onApply }: Props) {
             <button
               key={template.id}
               type="button"
-              className={`group relative min-w-[220px] rounded-xl border bg-white p-4 text-left transition-all duration-200 hover:shadow-lg ${
+              className={`group relative min-w-[180px] rounded-xl border bg-white p-4 text-left transition-all duration-200 hover:shadow-lg sm:min-w-[220px] ${
                 isActive 
                   ? 'border-brand-400 ring-2 ring-brand-100 shadow-md' 
                   : 'border-slate-200 hover:border-slate-300'

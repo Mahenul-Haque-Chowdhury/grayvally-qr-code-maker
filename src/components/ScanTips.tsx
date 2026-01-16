@@ -9,7 +9,7 @@ const TIPS = [
 
 export default function ScanTips() {
   return (
-    <section className="card px-6 py-6">
+    <section className="card px-4 py-5 sm:px-6 sm:py-6">
       <div className="section-header">
         <div className="section-icon bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
           <IconInfo className="h-5 w-5" />
