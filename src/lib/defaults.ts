@@ -45,7 +45,9 @@ export const DEFAULT_STYLE: QrStyle = {
     paddedDataUrl: null,
     sizeRatio: 0.2,
     padding: 10,
-    paddingEnabled: false
+    paddingEnabled: false,
+    color: '#111827',
+    presetId: null
   },
   frame: {
     style: 'none',

@@ -29,6 +29,7 @@ function HomePageContent() {
   const { toasts, pushToast, dismissToast } = useToasts();
   const searchParams = useSearchParams();
   const hydratedRef = useRef(false);
+  const paddedLogoKeyRef = useRef<string | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
 
   const payload = useMemo(
@@ -65,7 +66,9 @@ function HomePageContent() {
 
     async function buildPaddedLogo() {
       const logo = state.style.logo;
+      const background = state.style.backgroundTransparent ? 'rgba(0,0,0,0)' : state.style.bgColor;
       if (!logo.enabled || !logo.dataUrl || !logo.paddingEnabled || logo.padding <= 0) {
+        paddedLogoKeyRef.current = null;
         if (logo.paddedDataUrl) {
           setState((prev) => ({
             ...prev,
@@ -82,12 +85,17 @@ function HomePageContent() {
       }
 
       try {
-        const padded = await createPaddedLogoDataUrl(
-          logo.dataUrl,
-          logo.padding,
-          state.style.backgroundTransparent ? 'rgba(0,0,0,0)' : state.style.bgColor,
-        );
+        const paddedKey = `${logo.dataUrl}|${logo.padding}|${background}`;
+        if (logo.paddedDataUrl && paddedLogoKeyRef.current === paddedKey) {
+          return;
+        }
+
+        const padded = await createPaddedLogoDataUrl(logo.dataUrl, logo.padding, background);
         if (active) {
+          if (logo.paddedDataUrl === padded && paddedLogoKeyRef.current === paddedKey) {
+            return;
+          }
+          paddedLogoKeyRef.current = paddedKey;
           setState((prev) => ({
             ...prev,
             style: {

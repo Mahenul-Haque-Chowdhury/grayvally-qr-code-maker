@@ -5,6 +5,8 @@ const escapeWifi = (value: string) =>
 
 const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const isPhone = (value: string) => /^[+0-9().\s-]+$/.test(value);
+const escapeVcard = (value: string) =>
+  value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
 
 export function buildPayload(type: QrContentType, fields: QrFields) {
   switch (type) {
@@ -37,21 +39,29 @@ export function buildPayload(type: QrContentType, fields: QrFields) {
     case 'vcard': {
       const first = fields.vcardFirstName.trim();
       const last = fields.vcardLastName.trim();
+      const org = fields.vcardOrg.trim();
+      const title = fields.vcardTitle.trim();
+      const phone = fields.vcardPhone.trim();
+      const email = fields.vcardEmail.trim();
+      const website = fields.vcardWebsite.trim();
+      const address = fields.vcardAddress.trim();
       const fullName = `${first} ${last}`.trim();
+      const displayName = fullName || org || 'Contact';
+
       const lines = [
         'BEGIN:VCARD',
         'VERSION:3.0',
-        `N:${last};${first};;;`,
-        `FN:${fullName || fields.vcardOrg || 'Contact'}`,
-        fields.vcardOrg ? `ORG:${fields.vcardOrg}` : '',
-        fields.vcardTitle ? `TITLE:${fields.vcardTitle}` : '',
-        fields.vcardPhone ? `TEL;TYPE=CELL:${fields.vcardPhone}` : '',
-        fields.vcardEmail ? `EMAIL:${fields.vcardEmail}` : '',
-        fields.vcardWebsite ? `URL:${fields.vcardWebsite}` : '',
-        fields.vcardAddress ? `ADR:${fields.vcardAddress}` : '',
+        `N:${escapeVcard(last)};${escapeVcard(first)};;;`,
+        `FN:${escapeVcard(displayName)}`,
+        org ? `ORG:${escapeVcard(org)}` : '',
+        title ? `TITLE:${escapeVcard(title)}` : '',
+        phone ? `TEL;TYPE=CELL:${escapeVcard(phone)}` : '',
+        email ? `EMAIL:${escapeVcard(email)}` : '',
+        website ? `URL:${escapeVcard(website)}` : '',
+        address ? `ADR;TYPE=HOME:;;${escapeVcard(address)};;;;` : '',
         'END:VCARD'
       ];
-      return lines.filter(Boolean).join('\n');
+      return lines.filter(Boolean).join('\r\n');
     }
     default:
       return '';
@@ -106,7 +116,7 @@ export function validateFields(type: QrContentType, fields: QrFields) {
     if (!hasIdentity) {
       errors.vcard = 'Provide at least a name, org, email, or phone.';
     }
-    if (fields.vcardEmail && !isEmail(fields.vcardEmail)) {
+    if (fields.vcardEmail.trim() && !isEmail(fields.vcardEmail.trim())) {
       errors.vcard = 'Enter a valid vCard email.';
     }
   }

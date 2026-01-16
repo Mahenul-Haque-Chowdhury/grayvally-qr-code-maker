@@ -41,6 +41,8 @@ export interface QrLogo {
   sizeRatio: number;
   padding: number;
   paddingEnabled: boolean;
+  color: string;
+  presetId: string | null;
 }
 
 export interface QrStyle {

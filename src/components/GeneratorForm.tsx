@@ -9,7 +9,7 @@ import type {
   WifiEncryption
 } from '@/types/qr';
 import { cn } from '@/lib/utils';
-import { LOGO_PRESETS } from '@/lib/logoPresets';
+import { LOGO_PRESETS, getLogoPresetDataUrl } from '@/lib/logoPresets';
 import {
   IconChat,
   IconContact,
@@ -87,8 +87,8 @@ export default function GeneratorForm({
   const cornersDotStyle =
     state.style.cornersDotStyle ?? (state.style.rounded ? 'dot' : 'square');
   const hasCustomLogo =
-    Boolean(state.style.logo.enabled && state.style.logo.dataUrl) &&
-    !LOGO_PRESETS.some((logo) => logo.dataUrl === state.style.logo.dataUrl);
+    Boolean(state.style.logo.enabled && state.style.logo.dataUrl) && !state.style.logo.presetId;
+  const defaultLogoColor = '#111827';
 
   const updateField = (key: keyof QrState['fields'], value: string | boolean) => {
     onStateChange({
@@ -136,8 +136,8 @@ export default function GeneratorForm({
     });
   };
 
-  const handleLogoPreset = (dataUrl: string | null) => {
-    if (!dataUrl) {
+  const handleLogoPreset = (presetId: string | null) => {
+    if (!presetId) {
       onStateChange({
         ...state,
         style: {
@@ -146,12 +146,17 @@ export default function GeneratorForm({
             ...state.style.logo,
             enabled: false,
             dataUrl: null,
-            paddedDataUrl: null
+            paddedDataUrl: null,
+            presetId: null
           }
         }
       });
       return;
     }
+
+    const color = state.style.logo.color || defaultLogoColor;
+    const dataUrl = getLogoPresetDataUrl(presetId, color);
+    if (!dataUrl) return;
 
     onStateChange({
       ...state,
@@ -161,7 +166,8 @@ export default function GeneratorForm({
           ...state.style.logo,
           enabled: true,
           dataUrl,
-          paddedDataUrl: null
+          paddedDataUrl: null,
+          presetId
         }
       }
     });
@@ -181,7 +187,8 @@ export default function GeneratorForm({
             ...state.style.logo,
             enabled: true,
             dataUrl: String(reader.result),
-            paddedDataUrl: null
+            paddedDataUrl: null,
+            presetId: null
           }
         }
       });
@@ -913,19 +920,21 @@ export default function GeneratorForm({
               None
             </button>
             {LOGO_PRESETS.map((logo) => {
-              const active = state.style.logo.dataUrl === logo.dataUrl && state.style.logo.enabled;
+              const active = state.style.logo.presetId === logo.id && state.style.logo.enabled;
+              const previewColor = active ? state.style.logo.color : defaultLogoColor;
+              const previewDataUrl = getLogoPresetDataUrl(logo.id, previewColor) ?? '';
               return (
                 <button
                   key={logo.id}
                   type="button"
-                  onClick={() => handleLogoPreset(logo.dataUrl)}
+                  onClick={() => handleLogoPreset(logo.id)}
                   className={cn(
                     'flex min-w-[72px] flex-col items-center justify-center rounded-lg bg-transparent px-2 py-1.5 text-xs font-semibold text-slate-600 transition',
                     active ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
                   )}
                 >
                   <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-slate-100">
-                    <img src={logo.dataUrl} alt="" className="h-5 w-5" />
+                    <img src={previewDataUrl} alt="" className="h-5 w-5" />
                   </span>
                   <span className="mt-1 block">{logo.name}</span>
                 </button>
@@ -968,6 +977,36 @@ export default function GeneratorForm({
                   {Math.round(state.style.logo.sizeRatio * 100)}%
                 </span>
               </div>
+              {state.style.logo.presetId && (
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-medium text-slate-600">Logo color</label>
+                  <input
+                    className="color-swatch-input"
+                    type="color"
+                    value={state.style.logo.color}
+                    onChange={(event) => {
+                      const color = event.target.value;
+                      const dataUrl = getLogoPresetDataUrl(
+                        state.style.logo.presetId ?? '',
+                        color,
+                      );
+                      if (!dataUrl) return;
+                      onStateChange({
+                        ...state,
+                        style: {
+                          ...state.style,
+                          logo: {
+                            ...state.style.logo,
+                            color,
+                            dataUrl,
+                            paddedDataUrl: null
+                          }
+                        }
+                      });
+                    }}
+                  />
+                </div>
+              )}
               <label className="inline-flex items-center gap-1.5 text-xs text-slate-600">
                 <input
                   type="checkbox"
