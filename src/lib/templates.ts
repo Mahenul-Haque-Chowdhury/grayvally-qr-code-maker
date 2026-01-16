@@ -89,7 +89,14 @@ export const TEMPLATES: Template[] = [
       dotsStyle: 'rounded',
       cornersSquareStyle: 'extra-rounded',
       cornersDotStyle: 'dot',
-      logo: { enabled: true, sizeRatio: 0.22, padding: 12, paddingEnabled: true }
+      logo: {
+        enabled: true,
+        dataUrl: null,
+        paddedDataUrl: null,
+        sizeRatio: 0.22,
+        padding: 12,
+        paddingEnabled: true
+      }
     }
   }
 ];

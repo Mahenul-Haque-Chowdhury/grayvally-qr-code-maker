@@ -115,12 +115,11 @@ export function validateFields(type: QrContentType, fields: QrFields) {
 }
 
 export function sanitizeFields(fields: QrFields) {
-  const sanitized: QrFields = { ...fields };
-  (Object.keys(sanitized) as Array<keyof QrFields>).forEach((key) => {
-    const value = sanitized[key];
-    if (typeof value === 'string') {
-      sanitized[key] = value.replace(/\n/g, ' ').slice(0, 300) as QrFields[keyof QrFields];
-    }
-  });
-  return sanitized;
+  return Object.fromEntries(
+    Object.entries(fields).map(([key, value]) =>
+      typeof value === 'string'
+        ? [key, value.replace(/\n/g, ' ').slice(0, 300)]
+        : [key, value],
+    ),
+  ) as QrFields;
 }

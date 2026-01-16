@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ExportPanel from '@/components/ExportPanel';
 import GeneratorForm from '@/components/GeneratorForm';
@@ -23,7 +23,7 @@ import type { HistoryItem, QrState } from '@/types/qr';
 
 const HISTORY_KEY = 'grayvally-qr-history';
 
-export default function HomePage() {
+function HomePageContent() {
   const [state, setState] = useState<QrState>(DEFAULT_STATE);
   const [history, setHistory] = useLocalStorage<HistoryItem[]>(HISTORY_KEY, []);
   const { toasts, pushToast, dismissToast } = useToasts();
@@ -115,17 +115,13 @@ export default function HomePage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const media = window.matchMedia('(min-width: 1024px)');
-    const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
-      setIsDesktop('matches' in event ? event.matches : event.matches);
+    const handleChange = (matches: boolean) => {
+      setIsDesktop(matches);
     };
-    handleChange(media);
-    const listener = (event: MediaQueryListEvent) => handleChange(event);
-    if ('addEventListener' in media) {
-      media.addEventListener('change', listener);
-      return () => media.removeEventListener('change', listener);
-    }
-    media.addListener(listener);
-    return () => media.removeListener(listener);
+    handleChange(media.matches);
+    const listener = (event: MediaQueryListEvent) => handleChange(event.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
   }, []);
 
   const previewSize = isDesktop ? Math.min(280, debouncedStyle.size) : debouncedStyle.size;
@@ -353,5 +349,15 @@ export default function HomePage() {
         />
       </aside>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense
+      fallback={<div className="card-glow px-6 py-8 sm:py-10">Loading...</div>}
+    >
+      <HomePageContent />
+    </Suspense>
   );
 }
