@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Manrope, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
+import Link from 'next/link';
 
 const display = Space_Grotesk({
   subsets: ['latin'],
@@ -90,6 +91,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="relative flex-1 px-4 pb-16 pt-24 sm:px-6 lg:px-10 lg:pb-6 lg:pt-20 lg:overflow-y-auto">
             {children}
           </main>
+          <footer className="px-4 pb-8 text-center text-xs text-slate-500 sm:px-6 lg:px-10">
+            <span>© {new Date().getFullYear()} </span>
+            <Link href="https://www.grayvally.tech/" className="font-semibold text-slate-600 hover:text-brand-600">
+              GrayVally Software Solutions
+            </Link>
+            <span>. All rights reserved.</span>
+          </footer>
         </div>
       </body>
     </html>
