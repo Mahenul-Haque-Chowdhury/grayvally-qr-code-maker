@@ -543,14 +543,29 @@ export default function GeneratorForm({
             <div>
               <label className="label">Background</label>
               <div className="color-field">
-                <input className="color-value" readOnly value={state.style.bgColor} />
+                <input
+                  className="color-value"
+                  readOnly
+                  value={state.style.backgroundTransparent ? 'Transparent' : state.style.bgColor}
+                />
                 <input
                   className="color-swatch-input"
                   type="color"
+                  disabled={state.style.backgroundTransparent}
                   value={state.style.bgColor}
                   onChange={(event) => updateStyle('bgColor', event.target.value)}
                 />
               </div>
+              <label className="mt-2 inline-flex items-center gap-2 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={state.style.backgroundTransparent}
+                  onChange={(event) =>
+                    updateStyle('backgroundTransparent', event.target.checked)
+                  }
+                />
+                Transparent background (PNG/SVG)
+              </label>
             </div>
           </div>
 

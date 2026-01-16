@@ -45,7 +45,7 @@ export function buildQrOptions(state: QrState, payload: string, sizeOverride?: n
       type: cornersDotType
     },
     backgroundOptions: {
-      color: state.style.bgColor
+      color: state.style.backgroundTransparent ? 'transparent' : state.style.bgColor
     },
     image: state.style.logo.enabled
       ? state.style.logo.paddedDataUrl || state.style.logo.dataUrl || undefined

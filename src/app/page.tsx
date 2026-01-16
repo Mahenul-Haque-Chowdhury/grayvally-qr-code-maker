@@ -82,7 +82,11 @@ function HomePageContent() {
       }
 
       try {
-        const padded = await createPaddedLogoDataUrl(logo.dataUrl, logo.padding);
+        const padded = await createPaddedLogoDataUrl(
+          logo.dataUrl,
+          logo.padding,
+          state.style.backgroundTransparent ? 'rgba(0,0,0,0)' : state.style.bgColor,
+        );
         if (active) {
           setState((prev) => ({
             ...prev,
@@ -106,7 +110,7 @@ function HomePageContent() {
     return () => {
       active = false;
     };
-  }, [state.style.logo, pushToast]);
+  }, [state.style.logo, state.style.bgColor, state.style.backgroundTransparent, pushToast]);
 
   useEffect(() => {
     setGeneratedPayload((prev) => (prev ? prev : payload));

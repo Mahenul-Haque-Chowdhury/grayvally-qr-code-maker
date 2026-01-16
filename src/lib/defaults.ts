@@ -28,6 +28,7 @@ export const DEFAULT_STYLE: QrStyle = {
   ecc: 'M',
   fgColor: '#111827',
   bgColor: '#ffffff',
+  backgroundTransparent: false,
   gradient: {
     enabled: false,
     color1: '#2563eb',

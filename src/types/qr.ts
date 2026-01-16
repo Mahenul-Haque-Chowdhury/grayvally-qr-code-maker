@@ -49,6 +49,7 @@ export interface QrStyle {
   ecc: 'L' | 'M' | 'Q' | 'H';
   fgColor: string;
   bgColor: string;
+  backgroundTransparent: boolean;
   gradient: QrGradient;
   rounded: boolean;
   dotsStyle?: QrDotStyle;
