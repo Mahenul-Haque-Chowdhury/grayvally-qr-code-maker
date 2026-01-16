@@ -1,13 +1,15 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { IconQr, IconScan, IconShield, IconSparkles } from '@/components/Icons';
+import { IconScan, IconShield, IconSparkles } from '@/components/Icons';
+import GrayVallyLogo from '@/GrayVally.png';
 
 export default function Header() {
   return (
     <header className="fixed top-0 z-50 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-lg">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-6 lg:px-10">
         <Link href="/" className="group flex items-center gap-3">
-          <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 via-brand-600 to-slate-900 text-white shadow-lg shadow-brand-500/30 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-brand-500/40 group-hover:scale-105">
-            <IconQr className="h-5 w-5" />
+          <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-white shadow-lg shadow-brand-500/20 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-brand-500/30 group-hover:scale-105">
+            <Image src={GrayVallyLogo} alt="GrayVally logo" className="h-7 w-7 object-contain" priority />
             <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 shadow-sm">
               <IconSparkles className="h-2.5 w-2.5 text-amber-900" />
             </div>

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Manrope, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
@@ -12,9 +12,71 @@ const body = Manrope({
   variable: '--font-body'
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://grayvally.com';
+
 export const metadata: Metadata = {
-  title: 'GrayVally QR Code Generator',
-  description: 'Generate beautiful, reliable QR codes with GrayVally Software Solutions.'
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'GrayVally QR Code Generator',
+    template: '%s · GrayVally QR Studio'
+  },
+  description: 'Generate beautiful, reliable QR codes with advanced styling, logos, gradients, and exports. Fully local, privacy-first, no tracking.',
+  applicationName: 'GrayVally QR Studio',
+  keywords: [
+    'QR code generator',
+    'GrayVally',
+    'QR studio',
+    'QR code maker',
+    'QR styling',
+    'QR with logo',
+    'QR gradients',
+    'privacy-first QR'
+  ],
+  alternates: {
+    canonical: '/'
+  },
+  icons: {
+    icon: [{ url: '/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
+    apple: [{ url: '/apple-touch-icon.png', type: 'image/png' }]
+  },
+  openGraph: {
+    type: 'website',
+    url: '/',
+    siteName: 'GrayVally QR Studio',
+    title: 'GrayVally QR Code Generator',
+    description: 'Create stunning, scannable QR codes with advanced styling and exports. 100% local and private.',
+    images: [
+      {
+        url: '/og.png',
+        width: 512,
+        height: 512,
+        alt: 'GrayVally QR Code Generator'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary',
+    title: 'GrayVally QR Code Generator',
+    description: 'Create stunning, scannable QR codes with advanced styling and exports. 100% local and private.',
+    images: ['/og.png']
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1
+    }
+  }
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#f8fafc'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
