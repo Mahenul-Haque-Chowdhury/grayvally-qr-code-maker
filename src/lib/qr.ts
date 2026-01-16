@@ -10,7 +10,8 @@ export function buildQrOptions(state: QrState, payload: string, sizeOverride?: n
     state.style.cornersSquareStyle ?? (state.style.rounded ? 'extra-rounded' : 'square');
   const cornersDotType = state.style.cornersDotStyle ?? (state.style.rounded ? 'dot' : 'square');
 
-  const foreground = useGradient ? state.style.gradient.color1 : state.style.fgColor;
+  const dotsColor = useGradient ? state.style.gradient.color1 : state.style.fgColor;
+  const cornerColor = state.style.fgColor;
   const gradient = useGradient
     ? {
         type: 'linear' as const,
@@ -32,16 +33,16 @@ export function buildQrOptions(state: QrState, payload: string, sizeOverride?: n
       errorCorrectionLevel: state.style.ecc
     },
     dotsOptions: {
-      color: foreground,
+      color: dotsColor,
       type: dotsType,
       gradient
     },
     cornersSquareOptions: {
-      color: foreground,
+      color: cornerColor,
       type: cornersSquareType
     },
     cornersDotOptions: {
-      color: foreground,
+      color: cornerColor,
       type: cornersDotType
     },
     backgroundOptions: {

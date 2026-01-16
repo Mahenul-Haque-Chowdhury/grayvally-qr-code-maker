@@ -55,7 +55,9 @@ export const TEMPLATES: Template[] = [
     name: 'Gradient Neon',
     description: 'Bold linear gradient for digital showcases.',
     style: {
-      fgColor: '#00f5a0',
+      ecc: 'H',
+      margin: 12,
+      fgColor: '#0f766e',
       bgColor: '#ffffff',
       rounded: true,
       dotsStyle: 'rounded',
