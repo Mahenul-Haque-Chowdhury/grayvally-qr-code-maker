@@ -124,7 +124,9 @@ function HomePageContent() {
     return () => media.removeEventListener('change', listener);
   }, []);
 
-  const previewSize = isDesktop ? Math.min(280, debouncedStyle.size) : debouncedStyle.size;
+  const previewSize = isDesktop
+    ? Math.min(280, debouncedStyle.size)
+    : Math.min(240, debouncedStyle.size);
   const previewOptions = useMemo(
     () => buildQrOptions({ ...state, style: debouncedStyle }, debouncedPayload, previewSize),
     [state.type, state.fields, debouncedStyle, debouncedPayload, previewSize],

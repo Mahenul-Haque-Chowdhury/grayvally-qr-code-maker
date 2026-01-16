@@ -12,11 +12,11 @@ type Props = {
 
 export default function Toasts({ toasts, onDismiss }: Props) {
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+    <div className="fixed bottom-4 left-4 right-4 z-50 flex flex-col items-stretch gap-3 sm:bottom-6 sm:left-auto sm:right-6 sm:items-end">
       {toasts.map((toast, index) => (
         <div
           key={toast.id}
-          className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-white/95 backdrop-blur-lg px-4 py-3 text-sm text-slate-700 shadow-xl animate-slide-in"
+          className="flex w-full items-center gap-3 rounded-xl border border-slate-200/80 bg-white/95 backdrop-blur-lg px-4 py-3 text-sm text-slate-700 shadow-xl animate-slide-in sm:w-auto sm:max-w-sm"
           style={{ animationDelay: `${index * 100}ms` }}
         >
           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">

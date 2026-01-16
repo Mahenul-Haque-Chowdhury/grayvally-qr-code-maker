@@ -46,7 +46,7 @@ export default function PreviewCard({ payload, options, frame, valid, errors }: 
   }, [options]);
 
   return (
-    <section className="card-glow px-5 py-5 lg:px-4 lg:py-3">
+    <section className="card-glow px-4 py-4 sm:px-5 sm:py-5 lg:px-4 lg:py-3">
       <div className="flex items-center justify-between">
         <div className="section-header">
           <div className="section-icon-brand lg:h-9 lg:w-9">
@@ -77,7 +77,7 @@ export default function PreviewCard({ payload, options, frame, valid, errors }: 
         </span>
       </div>
 
-      <div className="mt-4 flex items-center justify-center rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100/50 p-6 border border-slate-200/50 lg:mt-2 lg:p-3">
+      <div className="mt-4 flex items-center justify-center rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100/50 p-4 sm:p-6 border border-slate-200/50 lg:mt-2 lg:p-3">
         {(() => {
           const labelTop = frame?.style === 'scan-top';
           const labelBottom = frame?.style === 'scan-bottom';
