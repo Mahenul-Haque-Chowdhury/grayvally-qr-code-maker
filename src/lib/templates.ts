@@ -97,7 +97,9 @@ export const TEMPLATES: Template[] = [
         paddedDataUrl: null,
         sizeRatio: 0.22,
         padding: 12,
-        paddingEnabled: true
+        paddingEnabled: true,
+        color: '#111827',
+        presetId: null
       }
     }
   }
