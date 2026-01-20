@@ -1,4 +1,7 @@
+"use client";
+
 import type { ChangeEvent, ReactNode } from 'react';
+import { useState } from 'react';
 import type {
   QrContentType,
   QrCornerDotStyle,
@@ -8,6 +11,7 @@ import type {
   QrState,
   WifiEncryption
 } from '@/types/qr';
+import type { Template } from '@/lib/templates';
 import { cn } from '@/lib/utils';
 import { LOGO_PRESETS, getLogoPresetDataUrl } from '@/lib/logoPresets';
 import {
@@ -24,8 +28,10 @@ import {
   IconGradient,
   IconFrame,
   IconImage,
-  IconLock
+  IconLock, IconPlus, IconMinus
 } from '@/components/Icons';
+import TemplatesPanel from '@/components/TemplatesPanel';
+import { IconTemplate } from '@/components/Icons';
 
 type Props = {
   state: QrState;
@@ -33,6 +39,8 @@ type Props = {
   onStateChange: (next: QrState) => void;
   onGenerate: () => void;
   onReset: () => void;
+  templates?: Template[];
+  onApplyTemplate?: (templateId: string) => void;
 };
 
 const TABS: Array<{ id: QrContentType; label: string; icon: ReactNode }> = [
@@ -79,8 +87,17 @@ export default function GeneratorForm({
   errors,
   onStateChange,
   onGenerate,
-  onReset
+  onReset,
+  templates,
+  onApplyTemplate
 }: Props) {
+  const [coreOpen, setCoreOpen] = useState(false);
+  const [colorsOpen, setColorsOpen] = useState(false);
+  const [framesOpen, setFramesOpen] = useState(false);
+  const [shapesOpen, setShapesOpen] = useState(false);
+  const [cornersOpen, setCornersOpen] = useState(false);
+  const [logosOpen, setLogosOpen] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
   const dotsStyle = state.style.dotsStyle ?? (state.style.rounded ? 'rounded' : 'square');
   const cornersSquareStyle =
     state.style.cornersSquareStyle ?? (state.style.rounded ? 'extra-rounded' : 'square');
@@ -226,10 +243,8 @@ export default function GeneratorForm({
               role="tab"
               aria-selected={state.type === tab.id}
               className={cn(
-                'tab-pill group',
-                state.type === tab.id
-                  ? 'tab-pill-active'
-                  : 'tab-pill-inactive',
+                'tab-pill group flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-2 text-center',
+                state.type === tab.id ? 'tab-pill-active' : 'tab-pill-inactive',
               )}
               onClick={() => onStateChange({ ...state, type: tab.id })}
             >
@@ -239,7 +254,7 @@ export default function GeneratorForm({
               )}>
                 {tab.icon}
               </span>
-              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="text-xs sm:text-sm mt-0.5">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -465,14 +480,47 @@ export default function GeneratorForm({
           )}
         </div>
       </div>
+      
+      <div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+            <IconTemplate className="h-4 w-4 text-slate-600" />
+            Templates
+          </div>
+          <button
+            type="button"
+            aria-expanded={templatesOpen}
+            onClick={() => setTemplatesOpen((v) => !v)}
+            className="btn btn-ghost btn-icon"
+          >
+            {templatesOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
+          </button>
+        </div>
+        {templatesOpen && templates && onApplyTemplate && (
+          <div className="mt-3">
+            <TemplatesPanel templates={templates} onApply={onApplyTemplate} compact />
+          </div>
+        )}
+      </div>
 
       <div className="mt-8 grid gap-6">
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <IconPalette className="h-4 w-4 text-slate-600" />
-            Core settings
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <IconPalette className="h-4 w-4 text-slate-600" />
+              Core settings
+            </div>
+            <button
+              type="button"
+              aria-expanded={coreOpen}
+              onClick={() => setCoreOpen((v) => !v)}
+              className="btn btn-ghost btn-icon"
+            >
+              {coreOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
+            </button>
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {coreOpen && (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <div className="flex items-center justify-between">
                 <label className="label" htmlFor="qr-size">
@@ -525,142 +573,169 @@ export default function GeneratorForm({
                   </option>
                 ))}
               </select>
+              </div>
             </div>
+            )}
           </div>
-        </div>
 
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <IconPalette className="h-4 w-4 text-slate-600" />
-            Colors
-          </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="label">Foreground</label>
-              <div className="color-field">
-                <input className="color-value" readOnly value={state.style.fgColor} />
-                <input
-                  className="color-swatch-input"
-                  type="color"
-                  value={state.style.fgColor}
-                  onChange={(event) => updateStyle('fgColor', event.target.value)}
-                />
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <IconPalette className="h-4 w-4 text-slate-600" />
+              Colors
             </div>
-            <div>
-              <label className="label">Background</label>
-              <div className="color-field">
-                <input
-                  className="color-value"
-                  readOnly
-                  value={state.style.backgroundTransparent ? 'Transparent' : state.style.bgColor}
-                />
-                <input
-                  className="color-swatch-input"
-                  type="color"
-                  disabled={state.style.backgroundTransparent}
-                  value={state.style.bgColor}
-                  onChange={(event) => updateStyle('bgColor', event.target.value)}
-                />
+            <button
+              type="button"
+              aria-expanded={colorsOpen}
+              onClick={() => setColorsOpen((v) => !v)}
+              className="btn btn-ghost btn-icon"
+            >
+              {colorsOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
+            </button>
+          </div>
+          {colorsOpen && (
+            <>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="label">Foreground</label>
+                  <div className="color-field">
+                    <input className="color-value" readOnly value={state.style.fgColor} />
+                    <input
+                      className="color-swatch-input"
+                      type="color"
+                      value={state.style.fgColor}
+                      onChange={(event) => updateStyle('fgColor', event.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="label">Background</label>
+                  <div className="color-field">
+                    <input
+                      className="color-value"
+                      readOnly
+                      value={state.style.backgroundTransparent ? 'Transparent' : state.style.bgColor}
+                    />
+                    <input
+                      className="color-swatch-input"
+                      type="color"
+                      disabled={state.style.backgroundTransparent}
+                      value={state.style.bgColor}
+                      onChange={(event) => updateStyle('bgColor', event.target.value)}
+                    />
+                  </div>
+                  <label className="mt-2 inline-flex items-center gap-2 text-sm text-slate-600">
+                    <input
+                      type="checkbox"
+                      checked={state.style.backgroundTransparent}
+                      onChange={(event) =>
+                        updateStyle('backgroundTransparent', event.target.checked)
+                      }
+                    />
+                    Transparent background (PNG/SVG)
+                  </label>
+                </div>
               </div>
-              <label className="mt-2 inline-flex items-center gap-2 text-sm text-slate-600">
+
+              <div className="mt-4 flex items-center gap-3">
                 <input
                   type="checkbox"
-                  checked={state.style.backgroundTransparent}
-                  onChange={(event) =>
-                    updateStyle('backgroundTransparent', event.target.checked)
-                  }
-                />
-                Transparent background (PNG/SVG)
-              </label>
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={state.style.gradient.enabled}
-              onChange={(event) =>
-                updateStyle('gradient', {
-                  ...state.style.gradient,
-                  enabled: event.target.checked
-                })
-              }
-            />
-            <span className="text-sm text-slate-600">Enable linear gradient</span>
-          </div>
-
-          {state.style.gradient.enabled && (
-            <div className="mt-4 grid gap-4 sm:grid-cols-3">
-              <div>
-                <label className="label">Gradient color 1</label>
-                <div className="color-field">
-                  <input
-                    className="color-value"
-                    readOnly
-                    value={state.style.gradient.color1}
-                  />
-                  <input
-                    className="color-swatch-input"
-                    type="color"
-                    value={state.style.gradient.color1}
-                    onChange={(event) =>
-                      updateStyle('gradient', {
-                        ...state.style.gradient,
-                        color1: event.target.value
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="label">Gradient color 2</label>
-                <div className="color-field">
-                  <input
-                    className="color-value"
-                    readOnly
-                    value={state.style.gradient.color2}
-                  />
-                  <input
-                    className="color-swatch-input"
-                    type="color"
-                    value={state.style.gradient.color2}
-                    onChange={(event) =>
-                      updateStyle('gradient', {
-                        ...state.style.gradient,
-                        color2: event.target.value
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="label">Direction (deg)</label>
-                <input
-                  className="input"
-                  type="number"
-                  min={0}
-                  max={360}
-                  value={state.style.gradient.rotation}
+                  checked={state.style.gradient.enabled}
                   onChange={(event) =>
                     updateStyle('gradient', {
                       ...state.style.gradient,
-                      rotation: Number(event.target.value || 0)
+                      enabled: event.target.checked
                     })
                   }
                 />
+                <span className="text-sm text-slate-600">Enable linear gradient</span>
               </div>
-            </div>
+
+              {state.style.gradient.enabled && (
+                <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                  <div>
+                    <label className="label">Gradient color 1</label>
+                    <div className="color-field">
+                      <input
+                        className="color-value"
+                        readOnly
+                        value={state.style.gradient.color1}
+                      />
+                      <input
+                        className="color-swatch-input"
+                        type="color"
+                        value={state.style.gradient.color1}
+                        onChange={(event) =>
+                          updateStyle('gradient', {
+                            ...state.style.gradient,
+                            color1: event.target.value
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="label">Gradient color 2</label>
+                    <div className="color-field">
+                      <input
+                        className="color-value"
+                        readOnly
+                        value={state.style.gradient.color2}
+                      />
+                      <input
+                        className="color-swatch-input"
+                        type="color"
+                        value={state.style.gradient.color2}
+                        onChange={(event) =>
+                          updateStyle('gradient', {
+                            ...state.style.gradient,
+                            color2: event.target.value
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="label">Direction (deg)</label>
+                    <input
+                      className="input"
+                      type="number"
+                      min={0}
+                      max={360}
+                      value={state.style.gradient.rotation}
+                      onChange={(event) =>
+                        updateStyle('gradient', {
+                          ...state.style.gradient,
+                          rotation: Number(event.target.value || 0)
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <IconQr className="h-4 w-4 text-slate-600" />
-            Frames
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <IconQr className="h-4 w-4 text-slate-600" />
+              Frames
+            </div>
+            <button
+              type="button"
+              aria-expanded={framesOpen}
+              onClick={() => setFramesOpen((v) => !v)}
+              className="btn btn-ghost btn-icon"
+            >
+              {framesOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
+            </button>
           </div>
-          <div className="mt-4 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
-            {FRAME_OPTIONS.map((frame) => {
+          {framesOpen && (
+            <>
+              <div className="mt-4 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
+                {FRAME_OPTIONS.map((frame) => {
               const active = state.style.frame.style === frame.id;
               return (
                 <button
@@ -690,10 +765,10 @@ export default function GeneratorForm({
                 </button>
               );
             })}
-          </div>
+              </div>
 
-          {state.style.frame.style !== 'none' && (
-            <div className="mt-4 grid gap-4 sm:grid-cols-4">
+                  {state.style.frame.style !== 'none' && (
+                    <div className="mt-4 grid gap-4 sm:grid-cols-4">
               <div>
                 <label className="label">Frame padding</label>
                 <input
@@ -799,16 +874,75 @@ export default function GeneratorForm({
                 </div>
               </div>
             </div>
+              )}
+
+              {(state.style.frame.style === 'scan-top' ||
+                state.style.frame.style === 'scan-bottom') && (
+                <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                  <div>
+                    <label className="label">Label text</label>
+                    <input
+                      className="input"
+                      value={state.style.frame.label}
+                      onChange={(event) => updateFrame('label', event.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Label background</label>
+                    <div className="color-field">
+                      <input
+                        className="color-value"
+                        readOnly
+                        value={state.style.frame.labelBg}
+                      />
+                      <input
+                        className="color-swatch-input"
+                        type="color"
+                        value={state.style.frame.labelBg}
+                        onChange={(event) => updateFrame('labelBg', event.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="label">Label text color</label>
+                    <div className="color-field">
+                      <input
+                        className="color-value"
+                        readOnly
+                        value={state.style.frame.labelColor}
+                      />
+                      <input
+                        className="color-swatch-input"
+                        type="color"
+                        value={state.style.frame.labelColor}
+                        onChange={(event) => updateFrame('labelColor', event.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
-        </div>
 
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <IconPalette className="h-4 w-4 text-slate-600" />
-            Shapes
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <IconPalette className="h-4 w-4 text-slate-600" />
+              Shapes
+            </div>
+            <button
+              type="button"
+              aria-expanded={shapesOpen}
+              onClick={() => setShapesOpen((v) => !v)}
+              className="btn btn-ghost btn-icon"
+            >
+              {shapesOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
+            </button>
           </div>
-          <div className="mt-4 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
-            {DOT_OPTIONS.map((option) => {
+          {shapesOpen && (
+            <>
+              <div className="mt-4 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
+                {DOT_OPTIONS.map((option) => {
               const active = dotsStyle === option.id;
               return (
                 <button
@@ -832,190 +966,220 @@ export default function GeneratorForm({
                 </button>
               );
             })}
-          </div>
+              </div>
+            </>
+          )}
         </div>
 
         <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <IconPalette className="h-4 w-4 text-slate-600" />
-            Corners
-          </div>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <div>
-              <p className="text-xs font-semibold text-slate-600">Outer corners</p>
-              <div className="mt-2 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
-                {CORNER_SQUARE_OPTIONS.map((option) => {
-                  const active = cornersSquareStyle === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => updateStyle('cornersSquareStyle', option.id)}
-                      className={cn(
-                        'flex min-w-[72px] flex-col items-start rounded-lg bg-transparent px-1.5 py-1.5 text-left transition',
-                        active ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
-                      )}
-                    >
-                      <div className="relative h-6 w-6">
-                        <span
-                          className={cn(
-                            'absolute left-0 top-0 h-6 w-6 border-2 border-slate-900',
-                            option.radius,
-                          )}
-                        />
-                      </div>
-                      <p className="mt-1 text-xs font-semibold text-slate-700">{option.label}</p>
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <IconPalette className="h-4 w-4 text-slate-600" />
+              Corners
             </div>
-            <div>
-              <p className="text-xs font-semibold text-slate-600">Inner dots</p>
-              <div className="mt-2 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
-                {CORNER_DOT_OPTIONS.map((option) => {
-                  const active = cornersDotStyle === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => updateStyle('cornersDotStyle', option.id)}
-                      className={cn(
-                        'flex min-w-[72px] flex-col items-start rounded-lg bg-transparent px-1.5 py-1.5 text-left transition',
-                        active ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
-                      )}
-                    >
-                      <div className="relative h-6 w-6">
-                        <span className="absolute left-0 top-0 h-6 w-6 rounded-[6px] border-2 border-slate-300" />
-                        <span
-                          className={cn(
-                            'absolute left-1.5 top-1.5 h-3 w-3 bg-slate-900',
-                            option.radius,
-                          )}
-                        />
-                      </div>
-                      <p className="mt-1 text-xs font-semibold text-slate-700">{option.label}</p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <IconQr className="h-4 w-4 text-slate-600" />
-            Logos
-          </div>
-          <div className="mt-3 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
             <button
               type="button"
-              onClick={() => handleLogoPreset(null)}
-              className={cn(
-                'flex min-w-[72px] flex-col items-center justify-center rounded-lg bg-transparent px-2 py-1.5 text-xs font-semibold text-slate-600 transition',
-                !state.style.logo.enabled ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
-              )}
+              aria-expanded={cornersOpen}
+              onClick={() => setCornersOpen((v) => !v)}
+              className="btn btn-ghost btn-icon"
             >
-              None
+              {cornersOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
             </button>
-            {LOGO_PRESETS.map((logo) => {
-              const active = state.style.logo.presetId === logo.id && state.style.logo.enabled;
-              const previewColor = active ? state.style.logo.color : defaultLogoColor;
-              const previewDataUrl = getLogoPresetDataUrl(logo.id, previewColor) ?? '';
-              return (
-                <button
-                  key={logo.id}
-                  type="button"
-                  onClick={() => handleLogoPreset(logo.id)}
-                  className={cn(
-                    'flex min-w-[72px] flex-col items-center justify-center rounded-lg bg-transparent px-2 py-1.5 text-xs font-semibold text-slate-600 transition',
-                    active ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
-                  )}
-                >
-                  <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-slate-100">
-                    <img src={previewDataUrl} alt="" className="h-5 w-5" />
-                  </span>
-                  <span className="mt-1 block">{logo.name}</span>
-                </button>
-              );
-            })}
-            <label className="flex min-w-[84px] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg bg-slate-100/80 px-2 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100">
-              <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-white">
-                {hasCustomLogo ? (
-                  <img src={state.style.logo.dataUrl ?? ''} alt="" className="h-5 w-5" />
-                ) : (
-                  <span className="text-[10px] font-bold text-slate-400">+</span>
-                )}
-              </span>
-              <span>{hasCustomLogo ? 'Uploaded' : 'Upload'}</span>
-              <input
-                className="hidden"
-                type="file"
-                accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                onChange={handleLogoUpload}
-              />
-            </label>
+          </div>
+          {cornersOpen && (
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div>
+                <p className="text-xs font-semibold text-slate-600">Outer corners</p>
+                <div className="mt-2 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
+                  {CORNER_SQUARE_OPTIONS.map((option) => {
+                    const active = cornersSquareStyle === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => updateStyle('cornersSquareStyle', option.id)}
+                        className={cn(
+                          'flex min-w-[72px] flex-col items-start rounded-lg bg-transparent px-1.5 py-1.5 text-left transition',
+                          active ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
+                        )}
+                      >
+                        <div className="relative h-6 w-6">
+                          <span
+                            className={cn(
+                              'absolute left-0 top-0 h-6 w-6 border-2 border-slate-900',
+                              option.radius,
+                            )}
+                          />
+                        </div>
+                        <p className="mt-1 text-xs font-semibold text-slate-700">{option.label}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-600">Inner dots</p>
+                <div className="mt-2 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
+                  {CORNER_DOT_OPTIONS.map((option) => {
+                    const active = cornersDotStyle === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => updateStyle('cornersDotStyle', option.id)}
+                        className={cn(
+                          'flex min-w-[72px] flex-col items-start rounded-lg bg-transparent px-1.5 py-1.5 text-left transition',
+                          active ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
+                        )}
+                      >
+                        <div className="relative h-6 w-6">
+                          <span className="absolute left-0 top-0 h-6 w-6 rounded-[6px] border-2 border-slate-300" />
+                          <span
+                            className={cn(
+                              'absolute left-1.5 top-1.5 h-3 w-3 bg-slate-900',
+                              option.radius,
+                            )}
+                          />
+                        </div>
+                        <p className="mt-1 text-xs font-semibold text-slate-700">{option.label}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <IconQr className="h-4 w-4 text-slate-600" />
+              Logos
+            </div>
+            <button
+              type="button"
+              aria-expanded={logosOpen}
+              onClick={() => setLogosOpen((v) => !v)}
+              className="btn btn-ghost btn-icon"
+            >
+              {logosOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
+            </button>
           </div>
 
-          {state.style.logo.enabled && (
-            <div className="mt-3 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2">
-                <label className="text-xs font-medium text-slate-600">Size</label>
-                <input
-                  className="w-20 accent-brand-600"
-                  type="range"
-                  min={0.1}
-                  max={0.35}
-                  step={0.02}
-                  value={state.style.logo.sizeRatio}
-                  onChange={(event) =>
-                    updateLogo('sizeRatio', Number(event.target.value || 0.2))
-                  }
-                />
-                <span className="text-xs font-semibold text-slate-700 w-8">
-                  {Math.round(state.style.logo.sizeRatio * 100)}%
-                </span>
-              </div>
-              {state.style.logo.presetId && (
-                <div className="flex items-center gap-2">
-                  <label className="text-xs font-medium text-slate-600">Logo color</label>
+          {logosOpen && (
+            <>
+              <div className="mt-3 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
+                <button
+                  type="button"
+                  onClick={() => handleLogoPreset(null)}
+                  className={cn(
+                    'flex min-w-[72px] flex-col items-center justify-center rounded-lg bg-transparent px-2 py-1.5 text-xs font-semibold text-slate-600 transition',
+                    !state.style.logo.enabled ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
+                  )}
+                >
+                  None
+                </button>
+                {LOGO_PRESETS.map((logo) => {
+                  const active = state.style.logo.presetId === logo.id && state.style.logo.enabled;
+                  const previewColor = active ? state.style.logo.color : defaultLogoColor;
+                  const previewDataUrl = getLogoPresetDataUrl(logo.id, previewColor) ?? '';
+                  return (
+                    <button
+                      key={logo.id}
+                      type="button"
+                      onClick={() => handleLogoPreset(logo.id)}
+                      className={cn(
+                        'flex min-w-[72px] flex-col items-center justify-center rounded-lg bg-transparent px-2 py-1.5 text-xs font-semibold text-slate-600 transition',
+                        active ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
+                      )}
+                    >
+                      <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-slate-100">
+                        <img src={previewDataUrl} alt="" className="h-5 w-5" />
+                      </span>
+                      <span className="mt-1 block">{logo.name}</span>
+                    </button>
+                  );
+                })}
+                <label className="flex min-w-[84px] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg bg-slate-100/80 px-2 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100">
+                  <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-white">
+                    {hasCustomLogo ? (
+                      <img src={state.style.logo.dataUrl ?? ''} alt="" className="h-5 w-5" />
+                    ) : (
+                      <span className="text-[10px] font-bold text-slate-400">+</span>
+                    )}
+                  </span>
+                  <span>{hasCustomLogo ? 'Uploaded' : 'Upload'}</span>
                   <input
-                    className="color-swatch-input"
-                    type="color"
-                    value={state.style.logo.color}
-                    onChange={(event) => {
-                      const color = event.target.value;
-                      const dataUrl = getLogoPresetDataUrl(
-                        state.style.logo.presetId ?? '',
-                        color,
-                      );
-                      if (!dataUrl) return;
-                      onStateChange({
-                        ...state,
-                        style: {
-                          ...state.style,
-                          logo: {
-                            ...state.style.logo,
-                            color,
-                            dataUrl,
-                            paddedDataUrl: null
-                          }
-                        }
-                      });
-                    }}
+                    className="hidden"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    onChange={handleLogoUpload}
                   />
+                </label>
+              </div>
+
+                {state.style.logo.enabled && (
+                  <div className="mt-3 flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-medium text-slate-600">Size</label>
+                    <input
+                      className="w-20 accent-brand-600"
+                      type="range"
+                      min={0.1}
+                      max={0.35}
+                      step={0.02}
+                      value={state.style.logo.sizeRatio}
+                      onChange={(event) =>
+                        updateLogo('sizeRatio', Number(event.target.value || 0.2))
+                      }
+                    />
+                    <span className="text-xs font-semibold text-slate-700 w-8">
+                      {Math.round(state.style.logo.sizeRatio * 100)}%
+                    </span>
+                  </div>
+                  {state.style.logo.presetId && (
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-medium text-slate-600">Logo color</label>
+                      <input
+                        className="color-swatch-input"
+                        type="color"
+                        value={state.style.logo.color}
+                        onChange={(event) => {
+                          const color = event.target.value;
+                          const dataUrl = getLogoPresetDataUrl(
+                            state.style.logo.presetId ?? '',
+                            color,
+                          );
+                          if (!dataUrl) return;
+                          onStateChange({
+                            ...state,
+                            style: {
+                              ...state.style,
+                              logo: {
+                                ...state.style.logo,
+                                color,
+                                dataUrl,
+                                paddedDataUrl: null
+                              }
+                            }
+                          });
+                        }}
+                      />
+                    </div>
+                  )}
+                  <label className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+                    <input
+                      type="checkbox"
+                      checked={state.style.logo.paddingEnabled}
+                      onChange={(event) => updateLogo('paddingEnabled', event.target.checked)}
+                    />
+                    White background
+                  </label>
                 </div>
               )}
-              <label className="inline-flex items-center gap-1.5 text-xs text-slate-600">
-                <input
-                  type="checkbox"
-                  checked={state.style.logo.paddingEnabled}
-                  onChange={(event) => updateLogo('paddingEnabled', event.target.checked)}
-                />
-                White background
-              </label>
-            </div>
+            </>
           )}
         </div>
 

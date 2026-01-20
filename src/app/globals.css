@@ -29,6 +29,23 @@ body {
   background-size: auto, auto, 48px 48px, 48px 48px;
 }
 
+/* Prevent any horizontal overflow globally (mobile) */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Ensure predictable box sizing for all elements */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Force range inputs to respect container width on mobile */
+input[type="range"] {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 @media (min-width: 1024px) {
   html {
     overflow: hidden;
@@ -195,6 +212,138 @@ h4 {
   .feature-card {
     @apply rounded-2xl border border-slate-200/70 bg-gradient-to-br from-white to-slate-50/80 px-5 py-4 transition-all duration-300 hover:shadow-lg hover:border-slate-300 hover:-translate-y-1;
   }
+
+  /* Prevent horizontal overflow on small screens for form controls and cards */
+  .card,
+  .card-glow {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .input,
+  .feature-card,
+  .color-field,
+  .tab-pill,
+  .badge,
+  .section-header,
+  .section-icon {
+    max-width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+  }
+
+  @media (max-width: 640px) {
+    .card-glow,
+    .card {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .feature-card {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .tab-pill {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+
+/* Additional mobile tightening to keep controls inside viewport */
+@media (max-width: 640px) {
+  .card,
+  .card-glow {
+    max-width: calc(100vw - 32px);
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .feature-card {
+    padding-left: 10px;
+    padding-right: 10px;
+    min-width: 0;
+  }
+
+  .section-header,
+  .section-icon,
+  .tab-pill,
+  .badge,
+  .input,
+  .color-field {
+    min-width: 0;
+  }
+
+  .tab-pill {
+    flex-shrink: 1;
+  }
+
+  .color-field {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .color-field .color-value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ensure any inputs respect the container */
+  .input,
+  input[type="number"],
+  select,
+  textarea {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* range already set, keep it enforced */
+  input[type="range"] {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Reduce spacing and min-widths for option grids on mobile to avoid overflow */
+@media (max-width: 640px) {
+  /* Target elements that used Tailwind min-w classes */
+  .card [class*="min-w-"] , button[class*="min-w-"], .group[class*="min-w-"] {
+    min-width: 0 !important;
+  }
+
+  /* Allow option rows to wrap instead of forcing a single row */
+  .flex.flex-nowrap {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Reduce padding inside option buttons */
+  .card button,
+  .card .feature-card,
+  .card .group {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Tighten section headers and icon spacing */
+  .section-header {
+    gap: 8px;
+  }
+
+  /* Smaller section icons */
+  .section-icon,
+  .section-icon-brand {
+    height: 38px;
+    width: 38px;
+  }
+}
 
   .tab-pill {
     @apply flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200;

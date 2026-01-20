@@ -84,11 +84,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
-        <div className="relative lg:h-screen lg:flex lg:flex-col lg:overflow-hidden">
+        <div className="relative w-full overflow-x-hidden lg:h-screen lg:flex lg:flex-col lg:overflow-hidden" style={{ overflowX: 'clip' as const }}>
           <div className="pointer-events-none absolute -top-32 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.25),_rgba(37,99,235,0))]" />
           <div className="pointer-events-none absolute -bottom-32 left-0 h-96 w-96 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,116,144,0.18),_rgba(14,116,144,0))]" />
           <Header />
-          <main className="relative flex-1 px-4 pb-16 pt-24 sm:px-6 lg:px-10 lg:pb-6 lg:pt-20 lg:overflow-y-auto">
+          <main className="relative flex-1 px-4 pb-16 pt-24 sm:px-6 lg:px-10 lg:pb-6 lg:pt-20 lg:overflow-y-auto overflow-x-hidden">
             {children}
           </main>
           <footer className="px-4 pb-8 text-center text-xs text-slate-500 sm:px-6 lg:px-10">

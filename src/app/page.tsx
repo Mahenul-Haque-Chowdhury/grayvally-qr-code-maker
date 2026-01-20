@@ -7,7 +7,6 @@ import GeneratorForm from '@/components/GeneratorForm';
 import HistoryPanel from '@/components/HistoryPanel';
 import PreviewCard from '@/components/PreviewCard';
 import ScanTips from '@/components/ScanTips';
-import TemplatesPanel from '@/components/TemplatesPanel';
 import Toasts from '@/components/Toasts';
 import { IconDownload, IconLock, IconShield, IconSparkles } from '@/components/Icons';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
@@ -240,7 +239,7 @@ function HomePageContent() {
         {/* Hero Section */}
         <section className="card-glow px-4 py-6 sm:px-6 sm:py-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col gap-4 max-w-xl">
+              <div className="flex flex-col gap-4 max-w-xl">
               <div className="flex items-center gap-2">
                 <span className="badge badge-brand">
                   <IconSparkles className="h-3.5 w-3.5" />
@@ -252,33 +251,39 @@ function HomePageContent() {
                 </span>
               </div>
               <h1 className="text-3xl font-bold text-slate-900 sm:text-4xl tracking-tight">
-                QR Code Generator
+                GrayVally QR Studio
               </h1>
               <p className="text-base text-slate-600 leading-relaxed">
                 Create stunning, scannable QR codes with advanced styling, gradients, logos, and frames. Export in multiple formats instantly.
               </p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-3 lg:flex lg:gap-4">
-              <div className="feature-card">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/20">
-                  <IconDownload className="h-5 w-5" />
+            <div className="flex gap-3 sm:grid sm:grid-cols-3 lg:flex lg:gap-4">
+              <div className="feature-card flex-1 min-w-0">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/20">
+                    <IconDownload className="h-5 w-5" />
+                  </div>
+                  <p className="text-sm font-bold text-slate-900 text-center">Crisp Exports</p>
+                  <p className="mt-1 text-xs text-slate-500 hidden sm:block text-center">PNG, SVG, PDF</p>
                 </div>
-                <p className="mt-3 text-sm font-bold text-slate-900">Crisp Exports</p>
-                <p className="mt-1 text-xs text-slate-500">PNG, SVG, PDF</p>
               </div>
-              <div className="feature-card">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/20">
-                  <IconSparkles className="h-5 w-5" />
+              <div className="feature-card flex-1 min-w-0">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/20">
+                    <IconSparkles className="h-5 w-5" />
+                  </div>
+                  <p className="text-sm font-bold text-slate-900 text-center">Full Control</p>
+                  <p className="mt-1 text-xs text-slate-500 hidden sm:block text-center">Gradients & Logos</p>
                 </div>
-                <p className="mt-3 text-sm font-bold text-slate-900">Full Control</p>
-                <p className="mt-1 text-xs text-slate-500">Gradients & Logos</p>
               </div>
-              <div className="feature-card">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
-                  <IconShield className="h-5 w-5" />
+              <div className="feature-card flex-1 min-w-0">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
+                    <IconShield className="h-5 w-5" />
+                  </div>
+                  <p className="text-sm font-bold text-slate-900 text-center">Private</p>
+                  <p className="mt-1 text-xs text-slate-500 hidden sm:block text-center">100% Local</p>
                 </div>
-                <p className="mt-3 text-sm font-bold text-slate-900">Private</p>
-                <p className="mt-1 text-xs text-slate-500">100% Local</p>
               </div>
             </div>
           </div>
@@ -292,32 +297,35 @@ function HomePageContent() {
               onStateChange={setState}
               onGenerate={handleGenerate}
               onReset={handleReset}
+              templates={TEMPLATES}
+              onApplyTemplate={handleApplyTemplate}
             />
-            <TemplatesPanel templates={TEMPLATES} onApply={handleApplyTemplate} />
+
+            {/* Move Live Preview + Export directly under Generate button on mobile */}
+            <div className="flex flex-col gap-6 lg:hidden">
+              <PreviewCard
+                payload={debouncedPayload}
+                options={previewOptions}
+                frame={state.style.frame}
+                valid={validation.valid}
+                errors={validation.errors}
+              />
+              <ExportPanel
+                payload={generatedPayload}
+                state={state}
+                valid={validation.valid}
+                filename={buildFileName(state.type)}
+                shareUrl={shareUrl}
+                onNotify={pushToast}
+              />
+            </div>
+
             <HistoryPanel
               history={history}
               onRestore={handleRestore}
               onToggleStar={handleToggleStar}
             />
             <ScanTips />
-          </div>
-
-          <div className="flex flex-col gap-6 lg:hidden">
-            <PreviewCard
-              payload={debouncedPayload}
-              options={previewOptions}
-              frame={state.style.frame}
-              valid={validation.valid}
-              errors={validation.errors}
-            />
-            <ExportPanel
-              payload={generatedPayload}
-              state={state}
-              valid={validation.valid}
-              filename={buildFileName(state.type)}
-              shareUrl={shareUrl}
-              onNotify={pushToast}
-            />
           </div>
         </div>
 
