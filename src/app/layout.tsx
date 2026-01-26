@@ -3,6 +3,7 @@ import { Manrope, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Link from 'next/link';
+import Script from 'next/script';
 
 const display = Space_Grotesk({
   subsets: ['latin'],
@@ -84,6 +85,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-RVTLVL7KD8" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);} 
+gtag('js', new Date());
+gtag('config', 'G-RVTLVL7KD8');`}
+        </Script>
         <div className="relative w-full overflow-x-hidden lg:h-screen lg:flex lg:flex-col lg:overflow-hidden" style={{ overflowX: 'clip' as const }}>
           <div className="pointer-events-none absolute -top-32 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.25),_rgba(37,99,235,0))]" />
           <div className="pointer-events-none absolute -bottom-32 left-0 h-96 w-96 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,116,144,0.18),_rgba(14,116,144,0))]" />
