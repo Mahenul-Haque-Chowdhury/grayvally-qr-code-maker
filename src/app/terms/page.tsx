@@ -1,4 +1,14 @@
+import type { Metadata } from 'next';
 import { IconInfo, IconCheckCircle } from '@/components/Icons';
+
+export const metadata: Metadata = {
+  title: 'Terms of Use',
+  description:
+    'Terms of Use for GrayVally QR Studio, the free browser-based QR code generator by GrayVally Software Solutions.',
+  alternates: {
+    canonical: '/terms'
+  }
+};
 
 const LAST_UPDATED = 'January 20, 2026';
 
@@ -102,11 +112,17 @@ export default function TermsPage() {
 
           <h2 className="text-lg font-semibold text-slate-900">12. Contact</h2>
           <p>
-            If you have questions about these Terms, please contact us at: support@example.com. Replace this address with
-            your preferred contact email.
+            If you have questions about these Terms, please contact GrayVally Software Solutions via{' '}
+            <a
+              href="https://www.grayvally.tech/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-brand-600 hover:underline"
+            >
+              grayvally.tech
+            </a>
+            .
           </p>
-
-          <p className="text-sm text-slate-500">This document is not legal advice. Consider consulting a lawyer for legal questions.</p>
 
           <div className="mt-6 flex items-center gap-3 rounded-xl bg-brand-50 border border-brand-200/50 px-4 py-3">
             <IconCheckCircle className="h-5 w-5 text-brand-600" />

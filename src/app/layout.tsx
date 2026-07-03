@@ -14,26 +14,36 @@ const body = Manrope({
   variable: '--font-body'
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://grayvally.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qrcode.grayvally.tech';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'GrayVally QR Code Generator',
+    default: 'Free QR Code Generator with Logo — GrayVally QR Studio',
     template: '%s · GrayVally QR Studio'
   },
-  description: 'Generate beautiful, reliable QR codes with advanced styling, logos, gradients, and exports. Fully local, privacy-first, no tracking.',
+  description:
+    'Create free custom QR codes with logos, gradients, colors, and frames. Export PNG, SVG, or PDF. No sign-up, no expiry, 100% private — everything runs in your browser.',
   applicationName: 'GrayVally QR Studio',
   keywords: [
     'QR code generator',
-    'GrayVally',
-    'QR studio',
+    'free QR code generator',
     'QR code maker',
-    'QR styling',
-    'QR with logo',
-    'QR gradients',
-    'privacy-first QR'
+    'QR code with logo',
+    'custom QR code',
+    'WiFi QR code',
+    'vCard QR code',
+    'QR code SVG download',
+    'QR code no expiry',
+    'GrayVally'
   ],
+  authors: [{ name: 'GrayVally Software Solutions', url: 'https://www.grayvally.tech/' }],
+  creator: 'GrayVally Software Solutions',
+  publisher: 'GrayVally Software Solutions',
+  category: 'technology',
+  formatDetection: {
+    telephone: false
+  },
   alternates: {
     canonical: '/'
   },
@@ -45,8 +55,9 @@ export const metadata: Metadata = {
     type: 'website',
     url: '/',
     siteName: 'GrayVally QR Studio',
-    title: 'GrayVally QR Code Generator',
-    description: 'Create stunning, scannable QR codes with advanced styling and exports. 100% local and private.',
+    title: 'Free QR Code Generator with Logo — GrayVally QR Studio',
+    description:
+      'Create free custom QR codes with logos, gradients, colors, and frames. Export PNG, SVG, or PDF. No sign-up, no expiry, 100% private.',
     images: [
       {
         url: '/og.png',
@@ -58,8 +69,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'GrayVally QR Code Generator',
-    description: 'Create stunning, scannable QR codes with advanced styling and exports. 100% local and private.',
+    title: 'Free QR Code Generator with Logo — GrayVally QR Studio',
+    description:
+      'Create free custom QR codes with logos, gradients, colors, and frames. Export PNG, SVG, or PDF. No sign-up, no expiry, 100% private.',
     images: ['/og.png']
   },
   robots: {
@@ -81,10 +93,44 @@ export const viewport: Viewport = {
   themeColor: '#f8fafc'
 };
 
+const webAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'GrayVally QR Studio',
+  url: siteUrl,
+  description:
+    'Free QR code generator with custom colors, gradients, logos, and frames. Export PNG, SVG, or PDF. Runs 100% locally in your browser.',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires a modern web browser with JavaScript enabled',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'GrayVally Software Solutions',
+    url: 'https://www.grayvally.tech/'
+  },
+  featureList: [
+    'URL, text, WiFi, email, phone, SMS, and vCard QR codes',
+    'Custom colors, gradients, dot and corner shapes',
+    'Logo embedding with padding control',
+    'Scan-me frames and labels',
+    'PNG, SVG, and PDF export',
+    'Local, privacy-first generation'
+  ]
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+        />
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-RVTLVL7KD8" strategy="afterInteractive" />
         <Script id="gtag-init" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];
@@ -100,6 +146,20 @@ gtag('config', 'G-RVTLVL7KD8');`}
             {children}
           </main>
           <footer className="px-4 pb-8 text-center text-xs text-slate-500 sm:px-6 lg:px-10">
+            <nav aria-label="Footer" className="mb-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+              <Link href="/" className="hover:text-brand-600">
+                QR Generator
+              </Link>
+              <Link href="/scan" className="hover:text-brand-600">
+                How to Scan
+              </Link>
+              <Link href="/privacy" className="hover:text-brand-600">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-brand-600">
+                Terms
+              </Link>
+            </nav>
             <span>© {new Date().getFullYear()} </span>
             <Link href="https://www.grayvally.tech/" className="font-semibold text-slate-600 hover:text-brand-600">
               GrayVally Software Solutions

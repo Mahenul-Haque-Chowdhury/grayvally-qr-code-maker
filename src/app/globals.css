@@ -222,7 +222,6 @@ h4 {
   }
 
   .input,
-  .feature-card,
   .color-field,
   .tab-pill,
   .badge,
@@ -231,6 +230,11 @@ h4 {
     max-width: 100%;
     box-sizing: border-box;
     word-break: break-word;
+  }
+
+  .feature-card {
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   @media (max-width: 640px) {

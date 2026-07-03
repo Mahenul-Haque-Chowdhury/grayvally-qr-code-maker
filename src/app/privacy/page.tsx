@@ -1,10 +1,20 @@
-import { IconCheckCircle, IconLock, IconShield } from '@/components/Icons';
+import type { Metadata } from 'next';
+import { IconCheckCircle, IconShield } from '@/components/Icons';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description:
+    'GrayVally QR Studio is local-first: your QR content never leaves your browser. Read how we handle data, local storage, and anonymous analytics.',
+  alternates: {
+    canonical: '/privacy'
+  }
+};
 
 const FEATURES = [
-  { title: 'No Tracking', description: 'We do not use tracking pixels or analytics by default', icon: '🔒' },
+  { title: 'Local Generation', description: 'QR codes are created entirely in your browser — content is never uploaded', icon: '🔒' },
   { title: 'Local Storage', description: 'Your history and preferences stay on your device', icon: '💾' },
-  { title: 'No Server', description: 'All processing happens in your browser', icon: '🏠' },
-  { title: 'Open Design', description: 'Transparent about how your data is handled', icon: '✨' }
+  { title: 'No QR Data Collection', description: 'Links, WiFi passwords, and contacts you encode are never sent to a server', icon: '🏠' },
+  { title: 'Anonymous Analytics', description: 'We use Google Analytics only for aggregate page-visit statistics — never your QR content', icon: '📊' }
 ];
 
 export default function PrivacyPage() {
@@ -22,8 +32,10 @@ export default function PrivacyPage() {
         </div>
         
         <p className="mt-5 text-sm text-slate-600 leading-relaxed">
-          GrayVally Software Solutions does not collect, transmit, or store your QR data.
-          All activity happens locally in your browser. We believe privacy is a fundamental right.
+          GrayVally Software Solutions does not collect, transmit, or store the content of your QR
+          codes. Generation, exports, and history all happen locally in your browser. The only data
+          we collect is anonymous, aggregate page-visit statistics via Google Analytics — never the
+          links, passwords, or contact details you encode.
         </p>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">

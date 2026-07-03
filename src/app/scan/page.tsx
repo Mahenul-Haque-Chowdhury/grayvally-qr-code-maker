@@ -1,4 +1,14 @@
-import { IconQr, IconScan, IconCheckCircle } from '@/components/Icons';
+import type { Metadata } from 'next';
+import { IconScan, IconCheckCircle } from '@/components/Icons';
+
+export const metadata: Metadata = {
+  title: 'How to Scan QR Codes',
+  description:
+    'Learn how to scan QR codes on iPhone and Android with your camera app, plus tips for lighting, distance, and print quality for reliable scans.',
+  alternates: {
+    canonical: '/scan'
+  }
+};
 
 const TIPS = [
   { text: 'Ensure the code fills 30-50% of the screen for easy focus', icon: '📐' },

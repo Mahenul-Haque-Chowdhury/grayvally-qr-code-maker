@@ -40,9 +40,10 @@ export default function Header() {
           {/* Mobile: show icons in one row and hamburger */}
           <div className="sm:hidden">
             <button
-              aria-label="Open menu"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              aria-expanded={open}
               onClick={() => setOpen((s) => !s)}
-              className="inline-flex items-center justify-center rounded-md p-2 text-slate-600 hover:bg-slate-100"
+              className="inline-flex items-center justify-center rounded-md p-2 text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100/50"
             >
               {open ? <IconX className="h-5 w-5" /> : <IconMenu className="h-5 w-5" />}
             </button>

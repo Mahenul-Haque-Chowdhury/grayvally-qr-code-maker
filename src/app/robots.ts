@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://grayvally.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qrcode.grayvally.tech';
 
 export default function robots(): MetadataRoute.Robots {
   return {

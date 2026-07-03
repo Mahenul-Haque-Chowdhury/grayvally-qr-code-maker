@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import GeneratorForm from '@/components/GeneratorForm';
 import { DEFAULT_STATE } from '@/lib/defaults';
@@ -22,10 +22,12 @@ describe('GeneratorForm', () => {
 
     render(<Wrapper />);
 
-    const sizeInput = screen.getByLabelText(/size/i);
-    await user.clear(sizeInput);
-    await user.type(sizeInput, '420');
+    // Core settings is collapsed by default — expand it first
+    await user.click(screen.getByRole('button', { name: /core settings/i }));
 
-    expect(sizeInput).toHaveValue(420);
+    const sizeInput = screen.getByLabelText(/size \(px\)/i) as HTMLInputElement;
+    fireEvent.change(sizeInput, { target: { value: '420' } });
+
+    expect(sizeInput.value).toBe('420');
   });
 });

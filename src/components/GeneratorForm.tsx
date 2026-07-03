@@ -82,6 +82,35 @@ const FRAME_OPTIONS: Array<{ id: QrFrameStyle; label: string; hint: string }> = 
   { id: 'scan-bottom', label: 'Scan bottom', hint: 'CTA label' }
 ];
 
+function SectionToggle({
+  icon,
+  label,
+  open,
+  onToggle
+}: {
+  icon: ReactNode;
+  label: string;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-expanded={open}
+      onClick={onToggle}
+      className="-mx-1 flex w-full items-center justify-between rounded-xl px-1 py-1 text-left transition-colors hover:bg-slate-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100/50"
+    >
+      <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+        {icon}
+        {label}
+      </span>
+      <span className="btn btn-ghost btn-icon pointer-events-none" aria-hidden="true">
+        {open ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
+      </span>
+    </button>
+  );
+}
+
 export default function GeneratorForm({
   state,
   errors,
@@ -481,21 +510,13 @@ export default function GeneratorForm({
         </div>
       </div>
       
-      <div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <IconTemplate className="h-4 w-4 text-slate-600" />
-            Templates
-          </div>
-          <button
-            type="button"
-            aria-expanded={templatesOpen}
-            onClick={() => setTemplatesOpen((v) => !v)}
-            className="btn btn-ghost btn-icon"
-          >
-            {templatesOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
-          </button>
-        </div>
+      <div className="mt-8">
+        <SectionToggle
+          icon={<IconTemplate className="h-4 w-4 text-slate-600" />}
+          label="Templates"
+          open={templatesOpen}
+          onToggle={() => setTemplatesOpen((v) => !v)}
+        />
         {templatesOpen && templates && onApplyTemplate && (
           <div className="mt-3">
             <TemplatesPanel templates={templates} onApply={onApplyTemplate} compact />
@@ -505,20 +526,12 @@ export default function GeneratorForm({
 
       <div className="mt-8 grid gap-6">
         <div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <IconPalette className="h-4 w-4 text-slate-600" />
-              Core settings
-            </div>
-            <button
-              type="button"
-              aria-expanded={coreOpen}
-              onClick={() => setCoreOpen((v) => !v)}
-              className="btn btn-ghost btn-icon"
-            >
-              {coreOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
-            </button>
-          </div>
+          <SectionToggle
+            icon={<IconSliders className="h-4 w-4 text-slate-600" />}
+            label="Core settings"
+            open={coreOpen}
+            onToggle={() => setCoreOpen((v) => !v)}
+          />
           {coreOpen && (
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
@@ -579,20 +592,12 @@ export default function GeneratorForm({
           </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <IconPalette className="h-4 w-4 text-slate-600" />
-              Colors
-            </div>
-            <button
-              type="button"
-              aria-expanded={colorsOpen}
-              onClick={() => setColorsOpen((v) => !v)}
-              className="btn btn-ghost btn-icon"
-            >
-              {colorsOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
-            </button>
-          </div>
+          <SectionToggle
+            icon={<IconPalette className="h-4 w-4 text-slate-600" />}
+            label="Colors"
+            open={colorsOpen}
+            onToggle={() => setColorsOpen((v) => !v)}
+          />
           {colorsOpen && (
             <>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -718,20 +723,12 @@ export default function GeneratorForm({
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <IconQr className="h-4 w-4 text-slate-600" />
-              Frames
-            </div>
-            <button
-              type="button"
-              aria-expanded={framesOpen}
-              onClick={() => setFramesOpen((v) => !v)}
-              className="btn btn-ghost btn-icon"
-            >
-              {framesOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
-            </button>
-          </div>
+          <SectionToggle
+            icon={<IconFrame className="h-4 w-4 text-slate-600" />}
+            label="Frames"
+            open={framesOpen}
+            onToggle={() => setFramesOpen((v) => !v)}
+          />
           {framesOpen && (
             <>
               <div className="mt-4 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
@@ -875,70 +872,16 @@ export default function GeneratorForm({
               </div>
             </div>
               )}
-
-              {(state.style.frame.style === 'scan-top' ||
-                state.style.frame.style === 'scan-bottom') && (
-                <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                  <div>
-                    <label className="label">Label text</label>
-                    <input
-                      className="input"
-                      value={state.style.frame.label}
-                      onChange={(event) => updateFrame('label', event.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="label">Label background</label>
-                    <div className="color-field">
-                      <input
-                        className="color-value"
-                        readOnly
-                        value={state.style.frame.labelBg}
-                      />
-                      <input
-                        className="color-swatch-input"
-                        type="color"
-                        value={state.style.frame.labelBg}
-                        onChange={(event) => updateFrame('labelBg', event.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="label">Label text color</label>
-                    <div className="color-field">
-                      <input
-                        className="color-value"
-                        readOnly
-                        value={state.style.frame.labelColor}
-                      />
-                      <input
-                        className="color-swatch-input"
-                        type="color"
-                        value={state.style.frame.labelColor}
-                        onChange={(event) => updateFrame('labelColor', event.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
             </>
           )}
 
         <div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <IconPalette className="h-4 w-4 text-slate-600" />
-              Shapes
-            </div>
-            <button
-              type="button"
-              aria-expanded={shapesOpen}
-              onClick={() => setShapesOpen((v) => !v)}
-              className="btn btn-ghost btn-icon"
-            >
-              {shapesOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
-            </button>
-          </div>
+          <SectionToggle
+            icon={<IconGradient className="h-4 w-4 text-slate-600" />}
+            label="Shapes"
+            open={shapesOpen}
+            onToggle={() => setShapesOpen((v) => !v)}
+          />
           {shapesOpen && (
             <>
               <div className="mt-4 flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
@@ -972,20 +915,12 @@ export default function GeneratorForm({
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <IconPalette className="h-4 w-4 text-slate-600" />
-              Corners
-            </div>
-            <button
-              type="button"
-              aria-expanded={cornersOpen}
-              onClick={() => setCornersOpen((v) => !v)}
-              className="btn btn-ghost btn-icon"
-            >
-              {cornersOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
-            </button>
-          </div>
+          <SectionToggle
+            icon={<IconQr className="h-4 w-4 text-slate-600" />}
+            label="Corners"
+            open={cornersOpen}
+            onToggle={() => setCornersOpen((v) => !v)}
+          />
           {cornersOpen && (
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div>
@@ -1053,20 +988,12 @@ export default function GeneratorForm({
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <IconQr className="h-4 w-4 text-slate-600" />
-              Logos
-            </div>
-            <button
-              type="button"
-              aria-expanded={logosOpen}
-              onClick={() => setLogosOpen((v) => !v)}
-              className="btn btn-ghost btn-icon"
-            >
-              {logosOpen ? <IconMinus className="h-4 w-4" /> : <IconPlus className="h-4 w-4" />}
-            </button>
-          </div>
+          <SectionToggle
+            icon={<IconImage className="h-4 w-4 text-slate-600" />}
+            label="Logos"
+            open={logosOpen}
+            onToggle={() => setLogosOpen((v) => !v)}
+          />
 
           {logosOpen && (
             <>
